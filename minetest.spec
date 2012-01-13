@@ -3,7 +3,7 @@
 
 Name:		minetest
 Version:	0.3.1
-Release:	6%{?dist}
+Release:	7%{?dist}
 Summary:	Multiplayer infinite-world block sandbox with survival mode
 
 Group:		Amusements/Games
@@ -156,6 +156,9 @@ fi
 
 
 %changelog
+* Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.3.1-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Thu Dec  8 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-6
 - Fixed docs for minetest package
 
