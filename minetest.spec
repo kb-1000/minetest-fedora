@@ -3,7 +3,7 @@
 
 Name:		minetest
 Version:	0.3.1
-Release:	7%{?dist}
+Release:	8%{?dist}
 Summary:	Multiplayer infinite-world block sandbox with survival mode
 
 Group:		Amusements/Games
@@ -23,6 +23,9 @@ Source2:	%{name}.service
 Source3:	%{name}.rsyslog
 Source4:	%{name}.logrotate
 Source5:	%{name}.README
+
+# Fix to build with gcc-4.7.0
+Patch1:		%{name}-0.3.1-gcc.patch
 
 BuildRequires:	cmake >= 2.6.0
 BuildRequires:	irrlicht-devel
@@ -54,6 +57,7 @@ Minetest multiplayer server. This package does not require X Window System
 
 %prep
 %setup -q -n %{gitname}-%{name}-%{gitcommit}
+%patch1 -p1
 
 %build
 %cmake -DJTHREAD_INCLUDE_DIR=%{_includedir}/jthread .
@@ -156,6 +160,10 @@ fi
 
 
 %changelog
+
+* Sat Jan 14 2012 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-8
+- Fixed to build with gcc-4.7.0
+
 * Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.3.1-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 

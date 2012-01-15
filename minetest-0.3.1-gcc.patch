@@ -1,0 +1,11 @@
+diff -uNr celeron55-minetest-bc0e5c0/src/filesys.cpp minetest-gcc/src/filesys.cpp
+--- celeron55-minetest-bc0e5c0/src/filesys.cpp	2011-11-09 11:07:40.000000000 +0100
++++ minetest-gcc/src/filesys.cpp	2012-01-14 17:33:28.620318340 +0100
+@@ -21,6 +21,7 @@
+ #include "strfnd.h"
+ #include <iostream>
+ #include <string.h>
++#include <unistd.h>
+ 
+ namespace fs
+ {
