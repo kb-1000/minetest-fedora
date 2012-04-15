@@ -1,9 +1,10 @@
+%define _hardened_build 1
 %global gitcommit bc0e5c0
 %global gitname celeron55
 
 Name:		minetest
 Version:	0.3.1
-Release:	9%{?dist}
+Release:	10%{?dist}
 Summary:	Multiplayer infinite-world block sandbox with survival mode
 
 Group:		Amusements/Games
@@ -160,9 +161,11 @@ fi
 
 
 %changelog
+* Fri Apr 13 2012 Jon Ciesla <limburgher@gmail.com> - 0.3.1-10
+- Added hardened build.
+
 * Tue Feb 28 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.3.1-9
 - Rebuilt for c++ ABI breakage
-
 
 * Sat Jan 14 2012 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-8
 - Fixed to build with gcc-4.7.0
