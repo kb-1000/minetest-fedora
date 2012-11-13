@@ -1,17 +1,18 @@
 %define _hardened_build 1
-%global gitcommit bc0e5c0
+%global gitcommit 9696ed3
 %global gitname celeron55
+%global gitgamecommit 87a1e37
 
 Name:		minetest
-Version:	0.3.1
-Release:	11%{?dist}
+Version:	0.4.3
+Release:	1%{?dist}
 Summary:	Multiplayer infinite-world block sandbox with survival mode
 
 Group:		Amusements/Games
-License:	GPLv2+
+License:	LGPLv2+ and CC-BY-SA
 URL:		http://celeron.55.lt/minetest/		
 
-# curl -L -O http://github.com/celeron55/minetest/tarball/0.3.1/minetest-0.3.1.tar.gz
+# curl -L -O http://github.com/celeron55/minetest/tarball/0.4.3/minetest-0.4.3.tar.gz
 # wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.desktop
 # wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.service
 # wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.rsyslog
@@ -24,9 +25,11 @@ Source2:	%{name}.service
 Source3:	%{name}.rsyslog
 Source4:	%{name}.logrotate
 Source5:	%{name}.README
+Source6:	http://github.com/%{gitname}/%{name}_game/tarball/%{version}/%{name}_game-%{version}.tar.gz
+Source7:	http://www.gnu.org/licenses/lgpl-2.1.txt
 
 # Fix to build with gcc-4.7.0
-Patch1:		%{name}-0.3.1-gcc.patch
+Patch1:		%{name}-0.4.3-gcc.patch
 
 BuildRequires:	cmake >= 2.6.0
 BuildRequires:	irrlicht-devel
@@ -60,6 +63,13 @@ Minetest multiplayer server. This package does not require X Window System
 %setup -q -n %{gitname}-%{name}-%{gitcommit}
 %patch1 -p1
 
+pushd games
+tar xf %{SOURCE6}
+mv %{gitname}-%{name}_game-%{gitgamecommit} %{name}_game
+popd
+
+cp %{SOURCE7} doc/
+
 %build
 %cmake -DJTHREAD_INCLUDE_DIR=%{_includedir}/jthread .
 make %{?_smp_mflags}
@@ -68,10 +78,6 @@ make %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-
-# Put icon in the new fdo location
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps
-cp -p %{name}-icon.svg $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps
 
 # Add desktop file
 desktop-file-install --dir=${RPM_BUILD_ROOT}%{_datadir}/applications %{SOURCE1}
@@ -102,7 +108,7 @@ mkdir __doc
 mv  $RPM_BUILD_ROOT%{_datadir}/doc/%{name}/* __doc
 rm -rf $RPM_BUILD_ROOT%{_datadir}/doc/%{name}
 
-%find_lang %{name}
+# %find_lang %{name}
 
 %post
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
@@ -143,24 +149,30 @@ if [ $1 -ge 1 ] ; then
     /bin/systemctl try-restart %{name}.service >/dev/null 2>&1 || :
 fi
 
-%files -f %{name}.lang
-%doc doc/changelog.txt doc/gpl-2.0.txt README.fedora
+# %%files -f %{name}.lang
+%files
+%doc doc/lgpl-2.1.txt README.fedora
 %{_bindir}/%{name}
 %{_datadir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/scalable/apps/%{name}-icon.svg
+%{_mandir}/man6/minetest.*
 
 %files server
-%doc README.txt doc/changelog.txt doc/gpl-2.0.txt doc/mapformat.txt doc/protocol.txt README.fedora
+%doc README.txt doc/lgpl-2.1.txt doc/mapformat.txt doc/protocol.txt README.fedora
 %{_bindir}/%{name}server
 %{_unitdir}/%{name}.service
 %config(noreplace) %{_sysconfdir}/%{name}.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}-server
 %config(noreplace) %{_sysconfdir}/rsyslog.d/%{name}.conf
 %attr(0755,minetest,minetest) %dir %{_sharedstatedir}/%{name}
+%{_mandir}/man6/minetestserver.*
 
 
 %changelog
+* Tue Nov 13 2012 Tom Callaway <spot@fedoraproject.org> - 0.4.3-1
+- update to 0.4.3
+
 * Fri Jul 20 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.3.1-11
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 

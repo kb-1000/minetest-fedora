@@ -1,0 +1,11 @@
+diff -up celeron55-minetest-9696ed3/src/filesys.cpp.gcc celeron55-minetest-9696ed3/src/filesys.cpp
+--- celeron55-minetest-9696ed3/src/filesys.cpp.gcc	2012-11-13 13:19:00.099102217 -0500
++++ celeron55-minetest-9696ed3/src/filesys.cpp	2012-11-13 13:19:07.819106986 -0500
+@@ -21,6 +21,7 @@ with this program; if not, write to the
+ #include "strfnd.h"
+ #include <iostream>
+ #include <string.h>
++#include <unistd.h>
+ #include "log.h"
+ 
+ namespace fs
