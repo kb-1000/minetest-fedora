@@ -37,6 +37,8 @@ BuildRequires:	bzip2-devel gettext-devel jthread-devel sqlite-devel
 BuildRequires:	libpng-devel libjpeg-turbo-devel libXxf86vm mesa-libGL-devel
 BuildRequires:	desktop-file-utils
 BuildRequires:	systemd-units
+BuildRequires:	openal-soft-devel
+BuildRequires:	libvorbis-devel
 
 Requires:	%{name}-server = %{version}-%{release}
 Requires:	hicolor-icon-theme
