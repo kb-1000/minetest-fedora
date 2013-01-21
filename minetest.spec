@@ -5,7 +5,7 @@
 
 Name:		minetest
 Version:	0.4.3
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Multiplayer infinite-world block sandbox with survival mode
 
 Group:		Amusements/Games
@@ -172,6 +172,9 @@ fi
 
 
 %changelog
+* Mon Jan 21 2013 Adam Tkac <atkac redhat com> - 0.4.3-2
+- rebuild due to "jpeg8-ABI" feature drop
+
 * Tue Nov 13 2012 Tom Callaway <spot@fedoraproject.org> - 0.4.3-1
 - update to 0.4.3
 
