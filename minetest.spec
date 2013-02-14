@@ -5,7 +5,7 @@
 
 Name:		minetest
 Version:	0.4.3
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Multiplayer infinite-world block sandbox with survival mode
 
 Group:		Amusements/Games
@@ -172,6 +172,9 @@ fi
 
 
 %changelog
+* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.4.3-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
 * Mon Jan 21 2013 Adam Tkac <atkac redhat com> - 0.4.3-2
 - rebuild due to "jpeg8-ABI" feature drop
 
