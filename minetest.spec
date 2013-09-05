@@ -1,16 +1,11 @@
-%define _hardened_build 1
-%global gitcommit 9696ed3
-%global gitname celeron55
-%global gitgamecommit 87a1e37
 
-Name:		minetest
-Version:	0.4.3
-Release:	4%{?dist}
-Summary:	Multiplayer infinite-world block sandbox with survival mode
+Name:     minetest
+Version:  0.4.4
+Release:  1%{?dist}
+Summary:  Multiplayer infinite-world block sandbox with survival mode
 
-Group:		Amusements/Games
-License:	LGPLv2+ and CC-BY-SA
-URL:		http://celeron.55.lt/minetest/		
+License:  LGPLv2+ and CC-BY-SA
+URL:      http://minetest.net/
 
 # curl -L -O http://github.com/celeron55/minetest/tarball/0.4.3/minetest-0.4.3.tar.gz
 # wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.desktop
@@ -19,98 +14,95 @@ URL:		http://celeron.55.lt/minetest/
 # wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.logrotate
 # wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.README
 
-Source0:	http://github.com/%{gitname}/%{name}/tarball/%{version}/%{name}-%{version}.tar.gz
-Source1:	%{name}.desktop
-Source2:	%{name}.service
-Source3:	%{name}.rsyslog
-Source4:	%{name}.logrotate
-Source5:	%{name}.README
-Source6:	http://github.com/%{gitname}/%{name}_game/tarball/%{version}/%{name}_game-%{version}.tar.gz
-Source7:	http://www.gnu.org/licenses/lgpl-2.1.txt
+Source0:  https://github.com/minetest/minetest/archive/%{version}/%{name}-%{version}.tar.gz
+Source1:  %{name}.desktop
+Source2:  %{name}.service
+Source3:  %{name}.rsyslog
+Source4:  %{name}.logrotate
+Source5:  %{name}.README
+Source6:  https://github.com/minetest/minetest_game/archive/%{version}/%{name}_game-%{version}.tar.gz
+Source7:  http://www.gnu.org/licenses/lgpl-2.1.txt
 
 # Fix to build with gcc-4.7.0
-Patch1:		%{name}-0.4.3-gcc.patch
+Patch1:   %{name}-0.4.3-gcc.patch
 
-BuildRequires:	cmake >= 2.6.0
-BuildRequires:	irrlicht-devel
-BuildRequires:	bzip2-devel gettext-devel jthread-devel sqlite-devel
-BuildRequires:	libpng-devel libjpeg-turbo-devel libXxf86vm mesa-libGL-devel
-BuildRequires:	desktop-file-utils
-BuildRequires:	systemd-units
-BuildRequires:	openal-soft-devel
-BuildRequires:	libvorbis-devel
+BuildRequires:  cmake >= 2.6.0
+BuildRequires:  irrlicht-devel
+BuildRequires:  bzip2-devel gettext-devel jthread-devel sqlite-devel
+BuildRequires:  libpng-devel libjpeg-turbo-devel libXxf86vm mesa-libGL-devel
+BuildRequires:  desktop-file-utils
+BuildRequires:  systemd
+BuildRequires:  openal-soft-devel
+BuildRequires:  libvorbis-devel
 
-Requires:	%{name}-server = %{version}-%{release}
-Requires:	hicolor-icon-theme
+Requires:       %{name}-server = %{version}-%{release}
+Requires:       hicolor-icon-theme
 
 %description 
 Game of mining, crafting and building in the infinite world of cubic
 blocks with optional hostile creatures, features both single and the
 network multiplayer mode. There are no in-game sounds yet
 
-%package	server
-Summary:	Minetest multiplayer server
-Group:		Amusements/Games
+%package server
+Summary:  Minetest multiplayer server
 
-Requires(pre):		shadow-utils
-Requires(post):		systemd-units
-Requires(preun):	systemd-units
-Requires(postun):	systemd-units
+Requires(pre):    shadow-utils
+Requires(post):   systemd
+Requires(preun):  systemd
+Requires(postun): systemd
 
-
-%description	server
+%description server
 Minetest multiplayer server. This package does not require X Window System
 
 %prep
-%setup -q -n %{gitname}-%{name}-%{gitcommit}
+%setup -q
 %patch1 -p1
 
 pushd games
 tar xf %{SOURCE6}
-mv %{gitname}-%{name}_game-%{gitgamecommit} %{name}_game
+mv %{name}_game-%{version} %{name}_game
 popd
 
 cp %{SOURCE7} doc/
+rm -rf %{buildroot}/%{name}-%{version}/src/jthread
 
 %build
 %cmake -DJTHREAD_INCLUDE_DIR=%{_includedir}/jthread .
 make %{?_smp_mflags}
 
-
 %install
-rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+%make_install
 
 # Add desktop file
-desktop-file-install --dir=${RPM_BUILD_ROOT}%{_datadir}/applications %{SOURCE1}
+desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
 
 # Systemd unit file
-mkdir -p $RPM_BUILD_ROOT%{_unitdir}
-cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_unitdir}
+mkdir -p %{buildroot}%{_unitdir}
+install -p -m0644 %{SOURCE2} %{buildroot}%{_unitdir}
 
 # /etc/rsyslog.d/minetest.conf
-mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/rsyslog.d
-cp -p %{SOURCE3} $RPM_BUILD_ROOT/%{_sysconfdir}/rsyslog.d/%{name}.conf
+mkdir -p %{buildroot}%{_sysconfdir}/rsyslog.d
+install -p -m0644 %{SOURCE3} %{buildroot}/%{_sysconfdir}/rsyslog.d/%{name}.conf
 
 # /etc/logrotate.d/minetest
-mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
-cp -p %{SOURCE4} $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d/%{name}-server
+mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d
+install -p -m0644 %{SOURCE4} %{buildroot}/%{_sysconfdir}/logrotate.d/%{name}-server
 
 # /var/lib/minetest directory for server data files
-mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/%{name} 
+mkdir -p %{buildroot}%{_sharedstatedir}/%{name} 
 
 # /etc/minetest.conf
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}
-cp -p minetest.conf.example $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
+mkdir -p %{buildroot}%{_sysconfdir}
+install -p -m0644 minetest.conf.example %{buildroot}%{_sysconfdir}/%{name}.conf
 
 cp -p %{SOURCE5} README.fedora
 
 # Move doc directory back to the sources
 mkdir __doc
-mv  $RPM_BUILD_ROOT%{_datadir}/doc/%{name}/* __doc
-rm -rf $RPM_BUILD_ROOT%{_datadir}/doc/%{name}
+mv  %{buildroot}%{_datadir}/doc/%{name}/* __doc
+rm -rf %{buildroot}%{_datadir}/doc/%{name}
 
-# %find_lang %{name}
+# %%find_lang %%{name}
 
 %post
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
@@ -127,31 +119,20 @@ fi
 %pre server
 getent group %{name} >/dev/null || groupadd -r %{name}
 getent passwd %{name} >/dev/null || \
-    useradd -r -g %{name} -d /var/lib/%{name} -s /sbin/nologin \
+    useradd -r -g %{name} -d %{_sharedstatedir}/%{name} -s /sbin/nologin \
     -c "Minetest multiplayer server" %{name}
 exit 0
 
 %post server
-if [ $1 -eq 1 ] ; then 
-    # Initial installation 
-    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
-fi
+%systemd_post %{name}.service
 
 %preun server
-if [ $1 -eq 0 ] ; then
-    # Package removal, not upgrade
-    /bin/systemctl --no-reload disable %{name}.service > /dev/null 2>&1 || :
-    /bin/systemctl stop %{name}.service > /dev/null 2>&1 || :
-fi
+%systemd_preun %{name}.service
 
 %postun server
-/bin/systemctl daemon-reload >/dev/null 2>&1 || :
-if [ $1 -ge 1 ] ; then
-    # Package upgrade, not uninstall
-    /bin/systemctl try-restart %{name}.service >/dev/null 2>&1 || :
-fi
+%systemd_postun_with_restart %{name}.service 
 
-# %%files -f %{name}.lang
+# %%files -f %%{name}.lang
 %files
 %doc doc/lgpl-2.1.txt README.fedora
 %{_bindir}/%{name}
@@ -172,6 +153,14 @@ fi
 
 
 %changelog
+* Thu Sep  5 2013 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.4.4-1
+- Update to 0.4.4
+- Fix systemd scripts (rhbz 850208)
+- fixed hardcoded paths
+- Spaces instead of tabs
+- Fixed URL, sources
+- buildroot macro instead of rpm_build_dir
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.4.3-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
@@ -208,7 +197,7 @@ fi
 * Mon Nov 14 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-4.gitbc0e5c0
 - Removed clean section and defattr according to guidelines
 
-* Sat Nov 13 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-3.gitbc0e5c0
+* Sun Nov 13 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-3.gitbc0e5c0
 - Systemd unit file, rsyslog, user/group and other server-related fixes
 - Fixed Release tag for Fedora review
 
