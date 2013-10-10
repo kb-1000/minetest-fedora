@@ -1,13 +1,12 @@
-
 Name:     minetest
-Version:  0.4.4
+Version:  0.4.7
 Release:  1%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
-License:  LGPLv2+ and CC-BY-SA
+# bundled(jthread) uses MIT license
+License:  LGPLv2+ and CC-BY-SA and MIT
 URL:      http://minetest.net/
 
-# curl -L -O http://github.com/celeron55/minetest/tarball/0.4.3/minetest-0.4.3.tar.gz
 # wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.desktop
 # wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.service
 # wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.rsyslog
@@ -23,17 +22,22 @@ Source5:  %{name}.README
 Source6:  https://github.com/minetest/minetest_game/archive/%{version}/%{name}_game-%{version}.tar.gz
 Source7:  http://www.gnu.org/licenses/lgpl-2.1.txt
 
-# Fix to build with gcc-4.7.0
-Patch1:   %{name}-0.4.3-gcc.patch
+Patch0:   0001-build-jthread-static.patch
+# https://github.com/minetest/minetest/pull/954
+Patch1:   0002-make-working-FindJson.cmake.patch
+
+# https://fedorahosted.org/fpc/ticket/347
+Provides: bundled(jthread)
 
 BuildRequires:  cmake >= 2.6.0
 BuildRequires:  irrlicht-devel
-BuildRequires:  bzip2-devel gettext-devel jthread-devel sqlite-devel
+BuildRequires:  bzip2-devel gettext-devel sqlite-devel
 BuildRequires:  libpng-devel libjpeg-turbo-devel libXxf86vm mesa-libGL-devel
 BuildRequires:  desktop-file-utils
 BuildRequires:  systemd
 BuildRequires:  openal-soft-devel
 BuildRequires:  libvorbis-devel
+BuildRequires:  jsoncpp-devel
 
 Requires:       %{name}-server = %{version}-%{release}
 Requires:       hicolor-icon-theme
@@ -56,6 +60,7 @@ Minetest multiplayer server. This package does not require X Window System
 
 %prep
 %setup -q
+%patch0 -p1
 %patch1 -p1
 
 pushd games
@@ -64,10 +69,12 @@ mv %{name}_game-%{version} %{name}_game
 popd
 
 cp %{SOURCE7} doc/
-rm -rf %{buildroot}/%{name}-%{version}/src/jthread
+
+# purge bundled jsoncpp
+rm -rf src/json
 
 %build
-%cmake -DJTHREAD_INCLUDE_DIR=%{_includedir}/jthread .
+%cmake .
 make %{?_smp_mflags}
 
 %install
@@ -134,7 +141,7 @@ exit 0
 
 # %%files -f %%{name}.lang
 %files
-%doc doc/lgpl-2.1.txt README.fedora
+%doc doc/lgpl-2.1.txt src/jthread/LICENSE.MIT README.fedora
 %{_bindir}/%{name}
 %{_datadir}/%{name}
 %{_datadir}/applications/%{name}.desktop
@@ -142,7 +149,7 @@ exit 0
 %{_mandir}/man6/minetest.*
 
 %files server
-%doc README.txt doc/lgpl-2.1.txt doc/mapformat.txt doc/protocol.txt README.fedora
+%doc README.txt doc/lgpl-2.1.txt src/jthread/LICENSE.MIT doc/mapformat.txt doc/protocol.txt README.fedora
 %{_bindir}/%{name}server
 %{_unitdir}/%{name}.service
 %config(noreplace) %{_sysconfdir}/%{name}.conf
@@ -151,8 +158,11 @@ exit 0
 %attr(0755,minetest,minetest) %dir %{_sharedstatedir}/%{name}
 %{_mandir}/man6/minetestserver.*
 
-
 %changelog
+* Fri Oct 11 2013 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.4.7-1
+- Update to 0.4.7 w/ bundled jthread
+- Bundle jthread correctly (kalev)
+
 * Thu Sep  5 2013 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.4.4-1
 - Update to 0.4.4
 - Fix systemd scripts (rhbz 850208)
