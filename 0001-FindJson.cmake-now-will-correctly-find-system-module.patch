@@ -1,18 +1,18 @@
-From e80cf3151638df348c12775f0297da617b9411a5 Mon Sep 17 00:00:00 2001
+From d41cada992ca0236e223ee6d10180fc53df64558 Mon Sep 17 00:00:00 2001
 From: Igor Gnatenko <i.gnatenko.brain@gmail.com>
 Date: Fri, 11 Oct 2013 03:29:03 +0400
-Subject: [PATCH 2/2] make working FindJson.cmake
+Subject: [PATCH] FindJson.cmake now will correctly find system module
 
 Signed-off-by: Igor Gnatenko <i.gnatenko.brain@gmail.com>
 ---
- cmake/Modules/FindJson.cmake | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+ cmake/Modules/FindJson.cmake | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
 diff --git a/cmake/Modules/FindJson.cmake b/cmake/Modules/FindJson.cmake
-index a9178a2..399b2eb 100644
+index a9178a2..2e64b4e 100644
 --- a/cmake/Modules/FindJson.cmake
 +++ b/cmake/Modules/FindJson.cmake
-@@ -1,18 +1,21 @@
+@@ -1,18 +1,19 @@
  # Look for json, use our own if not found
  
 -#FIND_PATH(JSON_INCLUDE_DIR json.h)
@@ -21,8 +21,6 @@ index a9178a2..399b2eb 100644
  
 -#FIND_LIBRARY(JSON_LIBRARY NAMES jsoncpp)
 +FIND_LIBRARY(JSON_LIBRARY NAMES jsoncpp)
-+MESSAGE(STATUS "dir: ${JSON_INCLUDE_DIR}")
-+MESSAGE(STATUS "lib: ${JSON_LIBRARY}")
  
 -#IF(JSON_LIBRARY AND JSON_INCLUDE_DIR)
 -#	SET( JSON_FOUND TRUE )
@@ -45,5 +43,5 @@ index a9178a2..399b2eb 100644
 -#ENDIF(JSON_FOUND)
 +ENDIF(JSON_FOUND)
 -- 
-1.8.3.1
+1.8.4.2
 

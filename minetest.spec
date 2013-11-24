@@ -1,5 +1,5 @@
 Name:     minetest
-Version:  0.4.7
+Version:  0.4.8
 Release:  1%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
@@ -22,9 +22,8 @@ Source5:  %{name}.README
 Source6:  https://github.com/minetest/minetest_game/archive/%{version}/%{name}_game-%{version}.tar.gz
 Source7:  http://www.gnu.org/licenses/lgpl-2.1.txt
 
-Patch0:   0001-build-jthread-static.patch
 # https://github.com/minetest/minetest/pull/954
-Patch1:   0002-make-working-FindJson.cmake.patch
+Patch0:   0001-FindJson.cmake-now-will-correctly-find-system-module.patch
 
 # https://fedorahosted.org/fpc/ticket/347
 Provides: bundled(jthread)
@@ -61,7 +60,6 @@ Minetest multiplayer server. This package does not require X Window System
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 pushd games
 tar xf %{SOURCE6}
@@ -159,6 +157,9 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Sun Nov 24 2013 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.4.8-1
+- Update to 0.4.8 (Changelog: http://dev.minetest.net/Changelog#0.4.7_.E2.86.92_0.4.8)
+
 * Fri Oct 11 2013 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.4.7-1
 - Update to 0.4.7 w/ bundled jthread
 - Bundle jthread correctly (kalev)
