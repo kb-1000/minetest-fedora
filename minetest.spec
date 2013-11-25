@@ -1,29 +1,26 @@
 Name:     minetest
 Version:  0.4.8
-Release:  1%{?dist}
+Release:  2%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 # bundled(jthread) uses MIT license
 License:  LGPLv2+ and CC-BY-SA and MIT
 URL:      http://minetest.net/
 
-# wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.desktop
-# wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.service
-# wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.rsyslog
-# wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.logrotate
-# wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.README
-
 Source0:  https://github.com/minetest/minetest/archive/%{version}/%{name}-%{version}.tar.gz
 Source1:  %{name}.desktop
-Source2:  %{name}.service
+Source2:  %{name}@.service
 Source3:  %{name}.rsyslog
 Source4:  %{name}.logrotate
 Source5:  %{name}.README
 Source6:  https://github.com/minetest/minetest_game/archive/%{version}/%{name}_game-%{version}.tar.gz
 Source7:  http://www.gnu.org/licenses/lgpl-2.1.txt
+Source8:  default.conf
 
 # https://github.com/minetest/minetest/pull/954
 Patch0:   0001-FindJson.cmake-now-will-correctly-find-system-module.patch
+# Shared irrlicht (patch from gentoo)
+Patch1:   minetest-0.4.8-shared-irrlicht.patch
 
 # https://fedorahosted.org/fpc/ticket/347
 Provides: bundled(jthread)
@@ -37,6 +34,9 @@ BuildRequires:  systemd
 BuildRequires:  openal-soft-devel
 BuildRequires:  libvorbis-devel
 BuildRequires:  jsoncpp-devel
+BuildRequires:  libcurl-devel
+# TODO: add unicode patches to irrlicht
+#BuildRequires:  freetype-devel
 
 Requires:       %{name}-server = %{version}-%{release}
 Requires:       hicolor-icon-theme
@@ -60,6 +60,7 @@ Minetest multiplayer server. This package does not require X Window System
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 pushd games
 tar xf %{SOURCE6}
@@ -72,6 +73,7 @@ cp %{SOURCE7} doc/
 rm -rf src/json
 
 %build
+# -DENABLE_FREETYPE=ON needed for Unicode in text chat
 %cmake .
 make %{?_smp_mflags}
 
@@ -82,23 +84,28 @@ make %{?_smp_mflags}
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
 
 # Systemd unit file
-mkdir -p %{buildroot}%{_unitdir}
-install -p -m0644 %{SOURCE2} %{buildroot}%{_unitdir}
+mkdir -p %{buildroot}%{_unitdir}/
+install -m 0644 %{SOURCE2} %{buildroot}%{_unitdir}
 
 # /etc/rsyslog.d/minetest.conf
-mkdir -p %{buildroot}%{_sysconfdir}/rsyslog.d
-install -p -m0644 %{SOURCE3} %{buildroot}/%{_sysconfdir}/rsyslog.d/%{name}.conf
+mkdir -p %{buildroot}%{_sysconfdir}/rsyslog.d/
+install -m 0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/rsyslog.d/%{name}.conf
 
 # /etc/logrotate.d/minetest
-mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d
-install -p -m0644 %{SOURCE4} %{buildroot}/%{_sysconfdir}/logrotate.d/%{name}-server
+mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d/
+install -m 0644 %{SOURCE4} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}-server
 
 # /var/lib/minetest directory for server data files
-mkdir -p %{buildroot}%{_sharedstatedir}/%{name} 
+install -d -m 0775 %{buildroot}%{_sharedstatedir}/%{name}/
+install -d -m 0775 %{buildroot}%{_sharedstatedir}/%{name}/default/
 
-# /etc/minetest.conf
-mkdir -p %{buildroot}%{_sysconfdir}
-install -p -m0644 minetest.conf.example %{buildroot}%{_sysconfdir}/%{name}.conf
+# /etc/minetest/default.conf
+install -d -m 0775 %{buildroot}%{_sysconfdir}/%{name}/
+install    -m 0664 minetest.conf.example %{buildroot}%{_sysconfdir}/%{name}/default.conf
+
+# /etc/sysconfig/default.conf
+install -d -m 0775 %{buildroot}%{_sysconfdir}/sysconfig/%{name}/
+install    -m 0664 %{SOURCE8} %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 
 cp -p %{SOURCE5} README.fedora
 
@@ -129,13 +136,13 @@ getent passwd %{name} >/dev/null || \
 exit 0
 
 %post server
-%systemd_post %{name}.service
+%systemd_post %{name}@default.service
 
 %preun server
-%systemd_preun %{name}.service
+%systemd_preun %{name}@default.service
 
 %postun server
-%systemd_postun_with_restart %{name}.service 
+%systemd_postun_with_restart %{name}@default.service 
 
 # %%files -f %%{name}.lang
 %files
@@ -149,14 +156,20 @@ exit 0
 %files server
 %doc README.txt doc/lgpl-2.1.txt src/jthread/LICENSE.MIT doc/mapformat.txt doc/protocol.txt README.fedora
 %{_bindir}/%{name}server
-%{_unitdir}/%{name}.service
-%config(noreplace) %{_sysconfdir}/%{name}.conf
+%{_unitdir}/%{name}@.service
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}-server
 %config(noreplace) %{_sysconfdir}/rsyslog.d/%{name}.conf
-%attr(0755,minetest,minetest) %dir %{_sharedstatedir}/%{name}
+%attr(-,minetest,minetest)%{_sharedstatedir}/%{name}/
+%attr(-,minetest,minetest)%{_sysconfdir}/%{name}/
+%attr(-,minetest,minetest)%{_sysconfdir}/sysconfig/%{name}/
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Mon Nov 25 2013 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.4.8-2
+- add support of multiple server cfgs
+- allow acces for group to server parts
+- Shared irrlicht (patch from gentoo)
+
 * Sun Nov 24 2013 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.4.8-1
 - Update to 0.4.8 (Changelog: http://dev.minetest.net/Changelog#0.4.7_.E2.86.92_0.4.8)
 
