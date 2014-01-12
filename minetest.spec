@@ -1,6 +1,6 @@
 Name:     minetest
-Version:  0.4.8
-Release:  2%{?dist}
+Version:  0.4.9
+Release:  1%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 # bundled(jthread) uses MIT license
@@ -35,6 +35,7 @@ BuildRequires:  openal-soft-devel
 BuildRequires:  libvorbis-devel
 BuildRequires:  jsoncpp-devel
 BuildRequires:  libcurl-devel
+BuildRequires:  luajit-devel
 # TODO: add unicode patches to irrlicht
 #BuildRequires:  freetype-devel
 
@@ -69,8 +70,8 @@ popd
 
 cp %{SOURCE7} doc/
 
-# purge bundled jsoncpp
-rm -rf src/json
+# purge bundled jsoncpp and lua
+rm -rf src/json src/lua
 
 %build
 # -DENABLE_FREETYPE=ON needed for Unicode in text chat
@@ -165,6 +166,9 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Sun Jan 12 2014 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.4.9-1
+- Update to 0.4.9 (Changelog: http://dev.minetest.net/Changelog#0.4.8_.E2.86.92_0.4.9)
+
 * Mon Nov 25 2013 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.4.8-2
 - add support of multiple server cfgs
 - allow acces for group to server parts
