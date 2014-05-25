@@ -1,6 +1,6 @@
 Name:     minetest
 Version:  0.4.9
-Release:  1%{?dist}
+Release:  2%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 # bundled(jthread) uses MIT license
@@ -166,6 +166,9 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Sun May 25 2014 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.4.9-2
+- rebuild against new irrlicht (RHBZ #1098784)
+
 * Sun Jan 12 2014 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.4.9-1
 - Update to 0.4.9 (Changelog: http://dev.minetest.net/Changelog#0.4.8_.E2.86.92_0.4.9)
 
