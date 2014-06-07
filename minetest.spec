@@ -1,6 +1,6 @@
 Name:     minetest
 Version:  0.4.9
-Release:  2%{?dist}
+Release:  3%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 # bundled(jthread) uses MIT license
@@ -166,6 +166,9 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.4.9-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Sun May 25 2014 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.4.9-2
 - rebuild against new irrlicht (RHBZ #1098784)
 
