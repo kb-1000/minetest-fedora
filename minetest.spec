@@ -153,6 +153,7 @@ exit 0
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/scalable/apps/%{name}-icon.svg
 %{_mandir}/man6/minetest.*
+%{_datadir}/appdata/%{name}.appdata.xml
 
 %files server
 %doc README.txt doc/lgpl-2.1.txt src/jthread/LICENSE.MIT doc/mapformat.txt doc/protocol.txt README.fedora
