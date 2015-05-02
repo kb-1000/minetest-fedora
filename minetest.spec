@@ -1,6 +1,6 @@
 Name:     minetest
 Version:  0.4.12
-Release:  1%{?dist}
+Release:  2%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 # bundled(jthread) uses MIT license
@@ -167,6 +167,9 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Sat May 02 2015 Kalev Lember <kalevlember@gmail.com> - 0.4.12-2
+- Rebuilt for GCC 5 C++11 ABI change
+
 * Sat Mar 14 2015 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.4.12-1
 - Update to 0.4.12 (Changelog: http://dev.minetest.net/Changelog#0.4.11_.E2.86.92_0.4.12)
 
