@@ -1,6 +1,6 @@
 Name:     minetest
 Version:  0.4.12
-Release:  2%{?dist}
+Release:  3%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 # bundled(jthread) uses MIT license
@@ -72,6 +72,8 @@ cp %{SOURCE7} doc/
 
 # purge bundled jsoncpp and lua
 rm -rf src/json src/lua
+
+find . -name .gitignore -delete
 
 %build
 # -DENABLE_FREETYPE=ON needed for Unicode in text chat
@@ -167,6 +169,9 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Thu May 14 2015 Ville Skyttä <ville.skytta@iki.fi> - 0.4.12-3
+- Don't ship .gitignore
+
 * Sat May 02 2015 Kalev Lember <kalevlember@gmail.com> - 0.4.12-2
 - Rebuilt for GCC 5 C++11 ABI change
 
