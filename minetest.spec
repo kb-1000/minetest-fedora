@@ -18,7 +18,7 @@ Source7:  http://www.gnu.org/licenses/lgpl-2.1.txt
 Source8:  default.conf
 
 %if 0%{?rhel}
-  ExclusiveArch:  %{ix86} x86_64
+ExclusiveArch:  %{ix86} x86_64
 %endif
 
 # https://github.com/minetest/minetest/pull/954
