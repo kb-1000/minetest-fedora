@@ -1,6 +1,6 @@
 Name:     minetest
 Version:  0.4.12
-Release:  4%{?dist}
+Release:  5%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 # bundled(jthread) uses MIT license
@@ -16,6 +16,10 @@ Source5:  %{name}.README
 Source6:  https://github.com/minetest/minetest_game/archive/%{version}/%{name}_game-%{version}.tar.gz
 Source7:  http://www.gnu.org/licenses/lgpl-2.1.txt
 Source8:  default.conf
+
+%if 0%{?rhel}
+  ExclusiveArch:  %{ix86} x86_64
+%endif
 
 # https://github.com/minetest/minetest/pull/954
 Patch0:   0001-FindJson.cmake-now-will-correctly-find-system-module.patch
@@ -169,6 +173,9 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Fri Aug 07 2015 Oliver Haessler <oliver@redhat.com> - 0.4.12-5
+- only build x86_64 on EPEL as minetest needs luajit and this has no ppc64 support
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.4.12-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
