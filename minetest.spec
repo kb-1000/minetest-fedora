@@ -1,6 +1,6 @@
 Name:     minetest
-Version:  0.4.12
-Release:  5%{?dist}
+Version:  0.4.13
+Release:  1%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 # bundled(jthread) uses MIT license
@@ -153,7 +153,8 @@ exit 0
 
 # %%files -f %%{name}.lang
 %files
-%doc doc/lgpl-2.1.txt src/jthread/LICENSE.MIT README.fedora
+%license doc/lgpl-2.1.txt src/jthread/LICENSE.MIT
+%doc README.fedora
 %{_bindir}/%{name}
 %{_datadir}/%{name}
 %{_datadir}/applications/%{name}.desktop
@@ -162,7 +163,8 @@ exit 0
 %{_datadir}/appdata/%{name}.appdata.xml
 
 %files server
-%doc README.txt doc/lgpl-2.1.txt src/jthread/LICENSE.MIT doc/mapformat.txt doc/protocol.txt README.fedora
+%license doc/lgpl-2.1.txt src/jthread/LICENSE.MIT
+%doc README.txt doc/mapformat.txt doc/protocol.txt README.fedora
 %{_bindir}/%{name}server
 %{_unitdir}/%{name}@.service
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}-server
@@ -173,6 +175,9 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Mon Aug 24 2015 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.4.13-1
+- Update to 0.4.13
+
 * Fri Aug 07 2015 Oliver Haessler <oliver@redhat.com> - 0.4.12-5
 - only build x86_64 on EPEL as minetest needs luajit and this has no ppc64 support
 
