@@ -1,6 +1,6 @@
 Name:     minetest
 Version:  0.4.13
-Release:  1%{?dist}
+Release:  2%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 # bundled(jthread) uses MIT license
@@ -22,7 +22,7 @@ ExclusiveArch:  %{ix86} x86_64
 %endif
 
 # Shared irrlicht (patch from gentoo)
-Patch1:   minetest-0.4.8-shared-irrlicht.patch
+# Patch1:   minetest-0.4.8-shared-irrlicht.patch
 
 # https://fedorahosted.org/fpc/ticket/347
 Provides: bundled(jthread)
@@ -85,6 +85,7 @@ find . -name .gitignore -delete
        -DENABLE_GETTEXT=TRUE \
        -DENABLE_SOUND=TRUE \
        -DENABLE_SYSTEM_JSONCPP=TRUE \
+       -DBUILD_SERVER=TRUE \
        .
 make %{?_smp_mflags}
 
@@ -179,6 +180,10 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Mon Aug 24 2015 Oliver Haessler <oliver@redhat.com> - 0.4.13-2
+- removed Patch1 as it is no longer needed
+- enabled build of minetestserver
+
 * Mon Aug 24 2015 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.4.13-1
 - Update to 0.4.13
 
