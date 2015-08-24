@@ -1,6 +1,6 @@
 Name:     minetest
 Version:  0.4.13
-Release:  2%{?dist}
+Release:  3%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 # bundled(jthread) uses MIT license
@@ -38,7 +38,6 @@ BuildRequires:  libvorbis-devel
 BuildRequires:  jsoncpp-devel
 BuildRequires:  libcurl-devel
 BuildRequires:  luajit-devel
-BuildRequires:  freetype-devel
 BuildRequires:  leveldb-devel
 BuildRequires:  gmp-devel
 
@@ -85,6 +84,7 @@ find . -name .gitignore -delete
        -DENABLE_GETTEXT=TRUE \
        -DENABLE_SOUND=TRUE \
        -DENABLE_SYSTEM_JSONCPP=TRUE \
+       -DENABLE_FREETYPE=FALSE \
        -DBUILD_SERVER=TRUE \
        .
 make %{?_smp_mflags}
@@ -180,6 +180,9 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Mon Aug 24 2015 Oliver Haessler <oliver@redhat.com> - 0.4.13-3
+- disabled freetyp to prevent the need for libcguittfont.so()(64bit)
+
 * Mon Aug 24 2015 Oliver Haessler <oliver@redhat.com> - 0.4.13-2
 - removed Patch1 as it is no longer needed
 - enabled build of minetestserver
