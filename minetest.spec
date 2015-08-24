@@ -21,8 +21,6 @@ Source8:  default.conf
 ExclusiveArch:  %{ix86} x86_64
 %endif
 
-# https://github.com/minetest/minetest/pull/954
-Patch0:   0001-FindJson.cmake-now-will-correctly-find-system-module.patch
 # Shared irrlicht (patch from gentoo)
 Patch1:   minetest-0.4.8-shared-irrlicht.patch
 
@@ -40,8 +38,9 @@ BuildRequires:  libvorbis-devel
 BuildRequires:  jsoncpp-devel
 BuildRequires:  libcurl-devel
 BuildRequires:  luajit-devel
-# TODO: add unicode patches to irrlicht
-#BuildRequires:  freetype-devel
+BuildRequires:  freetype-devel
+BuildRequires:  leveldb-devel
+BuildRequires:  gmp-devel
 
 Requires:       %{name}-server = %{version}-%{release}
 Requires:       hicolor-icon-theme
@@ -64,8 +63,7 @@ Minetest multiplayer server. This package does not require X Window System
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
+sed -i -e "s,\(find_path(JSON_INCLUDE_DIR json/features.h\)),\1 PATH_SUFFIXES jsoncpp)," cmake/Modules/FindJson.cmake
 
 pushd games
 tar xf %{SOURCE6}
@@ -81,7 +79,13 @@ find . -name .gitignore -delete
 
 %build
 # -DENABLE_FREETYPE=ON needed for Unicode in text chat
-%cmake .
+%cmake -DENABLE_CURL=TRUE \
+       -DENABLE_LEVELDB=TRUE \
+       -DENABLE_LUAJIT=TRUE \
+       -DENABLE_GETTEXT=TRUE \
+       -DENABLE_SOUND=TRUE \
+       -DENABLE_SYSTEM_JSONCPP=TRUE \
+       .
 make %{?_smp_mflags}
 
 %install
