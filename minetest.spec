@@ -21,9 +21,6 @@ Source8:  default.conf
 ExclusiveArch:  %{ix86} x86_64
 %endif
 
-# Shared irrlicht (patch from gentoo)
-# Patch1:   minetest-0.4.8-shared-irrlicht.patch
-
 # https://fedorahosted.org/fpc/ticket/347
 Provides: bundled(jthread)
 
