@@ -1,6 +1,6 @@
 Name:     minetest
 Version:  0.4.13
-Release:  3%{?dist}
+Release:  5%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 # bundled(jthread) uses MIT license
@@ -20,9 +20,6 @@ Source8:  default.conf
 %if 0%{?rhel}
 ExclusiveArch:  %{ix86} x86_64
 %endif
-
-# Shared irrlicht (patch from gentoo)
-# Patch1:   minetest-0.4.8-shared-irrlicht.patch
 
 # https://fedorahosted.org/fpc/ticket/347
 Provides: bundled(jthread)
@@ -180,6 +177,12 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Tue Mar 29 2016 Björn Esser <fedora@besser82.io> - 0.4.13-5
+- Rebuilt for libjsoncpp.so.1
+
+* Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.13-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
 * Mon Aug 24 2015 Oliver Haessler <oliver@redhat.com> - 0.4.13-3
 - disabled freetyp to prevent the need for libcguittfont.so()(64bit)
 
