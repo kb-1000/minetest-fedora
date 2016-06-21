@@ -1,10 +1,9 @@
 Name:     minetest
-Version:  0.4.13
-Release:  5%{?dist}
+Version:  0.4.14
+Release:  1%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
-# bundled(jthread) uses MIT license
-License:  LGPLv2+ and CC-BY-SA and MIT
+License:  LGPLv2+ and CC-BY-SA
 URL:      http://minetest.net/
 
 Source0:  https://github.com/minetest/minetest/archive/%{version}/%{name}-%{version}.tar.gz
@@ -20,9 +19,6 @@ Source8:  default.conf
 %if 0%{?rhel}
 ExclusiveArch:  %{ix86} x86_64
 %endif
-
-# https://fedorahosted.org/fpc/ticket/347
-Provides: bundled(jthread)
 
 BuildRequires:  cmake >= 2.6.0
 BuildRequires:  irrlicht-devel
@@ -155,18 +151,18 @@ exit 0
 
 # %%files -f %%{name}.lang
 %files
-%license doc/lgpl-2.1.txt src/jthread/LICENSE.MIT
+%license doc/lgpl-2.1.txt
 %doc README.fedora
 %{_bindir}/%{name}
 %{_datadir}/%{name}
 %{_datadir}/applications/%{name}.desktop
-%{_datadir}/icons/hicolor/scalable/apps/%{name}-icon.svg
+%{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
 %{_mandir}/man6/minetest.*
 %{_datadir}/appdata/%{name}.appdata.xml
 
 %files server
-%license doc/lgpl-2.1.txt src/jthread/LICENSE.MIT
-%doc README.txt doc/mapformat.txt doc/protocol.txt README.fedora
+%license doc/lgpl-2.1.txt
+%doc README.txt doc/world_format.txt doc/protocol.txt README.fedora
 %{_bindir}/%{name}server
 %{_unitdir}/%{name}@.service
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}-server
@@ -177,6 +173,10 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Tue Jun 21 2016 Igor Gnatenko <ignatenko@redhat.com> - 0.4.14-1
+- Update to 0.4.14 (RHBZ #1336243)
+  Kudos to Ben Rosser <rosser.bjr@gmail.com>
+
 * Tue Mar 29 2016 Björn Esser <fedora@besser82.io> - 0.4.13-5
 - Rebuilt for libjsoncpp.so.1
 
