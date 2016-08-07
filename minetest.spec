@@ -1,6 +1,6 @@
 Name:     minetest
 Version:  0.4.14
-Release:  1%{?dist}
+Release:  2%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 License:  LGPLv2+ and CC-BY-SA
@@ -173,6 +173,9 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Sun Aug 07 2016 Igor Gnatenko <ignatenko@redhat.com> - 0.4.14-2
+- Rebuild for LevelDB 1.18
+
 * Tue Jun 21 2016 Igor Gnatenko <ignatenko@redhat.com> - 0.4.14-1
 - Update to 0.4.14 (RHBZ #1336243)
   Kudos to Ben Rosser <rosser.bjr@gmail.com>
