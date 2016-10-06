@@ -1,6 +1,6 @@
 Name:     minetest
 Version:  0.4.14
-Release:  3%{?dist}
+Release:  4%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 License:  LGPLv2+ and CC-BY-SA
@@ -173,6 +173,9 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Thu Oct 06 2016 Björn Esser <fedora@besser82.io> - 0.4.14-4
+- Rebuilt for libjsoncpp.so.11
+
 * Mon Aug 29 2016 Igor Gnatenko <ignatenko@redhat.com> - 0.4.14-3
 - Rebuild for LuaJIT 2.1.0
 
