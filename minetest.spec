@@ -21,6 +21,9 @@ Patch0001:      0001-use-pkg-config-to-find-luajit.patch
 
 %if 0%{?rhel}
 ExclusiveArch:  %{ix86} x86_64
+%else
+# LuaJIT arches
+ExclusiveArch:  %{arm} %{ix86} x86_64 %{mips} aarch64
 %endif
 
 BuildRequires:  cmake >= 2.6.0
