@@ -1,6 +1,6 @@
 Name:     minetest
-Version:  0.4.14
-Release:  4%{?dist}
+Version:  0.4.15
+Release:  1%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 License:  LGPLv2+ and CC-BY-SA
@@ -15,6 +15,9 @@ Source5:  %{name}.README
 Source6:  https://github.com/minetest/minetest_game/archive/%{version}/%{name}_game-%{version}.tar.gz
 Source7:  http://www.gnu.org/licenses/lgpl-2.1.txt
 Source8:  default.conf
+
+# https://github.com/minetest/minetest/issues/4483
+Patch0001:      0001-use-pkg-config-to-find-luajit.patch
 
 %if 0%{?rhel}
 ExclusiveArch:  %{ix86} x86_64
@@ -54,8 +57,7 @@ Requires(postun): systemd
 Minetest multiplayer server. This package does not require X Window System
 
 %prep
-%setup -q
-sed -i -e "s,\(find_path(JSON_INCLUDE_DIR json/features.h\)),\1 PATH_SUFFIXES jsoncpp)," cmake/Modules/FindJson.cmake
+%autosetup -p1
 
 pushd games
 tar xf %{SOURCE6}
@@ -173,6 +175,9 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Tue Dec 27 2016 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.4.15-1
+- Update to 0.4.15
+
 * Thu Oct 06 2016 Björn Esser <fedora@besser82.io> - 0.4.14-4
 - Rebuilt for libjsoncpp.so.11
 
