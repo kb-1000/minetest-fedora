@@ -1,5 +1,5 @@
 Name:     minetest
-Version:  0.4.14
+Version:  0.4.15
 Release:  1%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
@@ -16,8 +16,14 @@ Source6:  https://github.com/minetest/minetest_game/archive/%{version}/%{name}_g
 Source7:  http://www.gnu.org/licenses/lgpl-2.1.txt
 Source8:  default.conf
 
+# https://github.com/minetest/minetest/issues/4483
+Patch0001:      0001-use-pkg-config-to-find-luajit.patch
+
 %if 0%{?rhel}
 ExclusiveArch:  %{ix86} x86_64
+%else
+# LuaJIT arches
+ExclusiveArch:  %{arm} %{ix86} x86_64 %{mips} aarch64
 %endif
 
 BuildRequires:  cmake >= 2.6.0
@@ -54,8 +60,7 @@ Requires(postun): systemd
 Minetest multiplayer server. This package does not require X Window System
 
 %prep
-%setup -q
-sed -i -e "s,\(find_path(JSON_INCLUDE_DIR json/features.h\)),\1 PATH_SUFFIXES jsoncpp)," cmake/Modules/FindJson.cmake
+%autosetup -p1
 
 pushd games
 tar xf %{SOURCE6}
@@ -156,6 +161,7 @@ exit 0
 %{_bindir}/%{name}
 %{_datadir}/%{name}
 %{_datadir}/applications/%{name}.desktop
+%{_datadir}/icons/hicolor/*/apps/%{name}.png
 %{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
 %{_mandir}/man6/minetest.*
 %{_datadir}/appdata/%{name}.appdata.xml
@@ -173,6 +179,18 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Tue Dec 27 2016 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.4.15-1
+- Update to 0.4.15
+
+* Thu Oct 06 2016 Björn Esser <fedora@besser82.io> - 0.4.14-4
+- Rebuilt for libjsoncpp.so.11
+
+* Mon Aug 29 2016 Igor Gnatenko <ignatenko@redhat.com> - 0.4.14-3
+- Rebuild for LuaJIT 2.1.0
+
+* Sun Aug 07 2016 Igor Gnatenko <ignatenko@redhat.com> - 0.4.14-2
+- Rebuild for LevelDB 1.18
+
 * Tue Jun 21 2016 Igor Gnatenko <ignatenko@redhat.com> - 0.4.14-1
 - Update to 0.4.14 (RHBZ #1336243)
   Kudos to Ben Rosser <rosser.bjr@gmail.com>
