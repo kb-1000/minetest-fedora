@@ -1,6 +1,6 @@
 Name:     minetest
 Version:  0.4.15
-Release:  1%{?dist}
+Release:  2%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 License:  LGPLv2+ and CC-BY-SA
@@ -179,6 +179,9 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.15-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Tue Dec 27 2016 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.4.15-1
 - Update to 0.4.15
 
