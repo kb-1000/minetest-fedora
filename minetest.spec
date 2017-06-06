@@ -1,6 +1,6 @@
 Name:     minetest
-Version:  0.4.15
-Release:  2%{?dist}
+Version:  0.4.16
+Release:  1%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 License:  LGPLv2+ and CC-BY-SA
@@ -39,6 +39,7 @@ BuildRequires:  libcurl-devel
 BuildRequires:  luajit-devel
 BuildRequires:  leveldb-devel
 BuildRequires:  gmp-devel
+BuildRequires:	libappstream-glib
 
 Requires:       %{name}-server = %{version}-%{release}
 Requires:       hicolor-icon-theme
@@ -126,6 +127,11 @@ rm -rf %{buildroot}%{_datadir}/doc/%{name}
 
 # %%find_lang %%{name}
 
+#move appdata file to the proper location, and validate
+mkdir -p %{buildroot}%{_datadir}/appdata
+mv %{buildroot}%{_datadir}/metainfo/net.minetest.minetest.appdata.xml %{buildroot}%{_datadir}/appdata/%{name}.appdata.xml
+appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/%{name}.appdata.xml
+
 %post
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
 
@@ -161,6 +167,7 @@ exit 0
 %{_bindir}/%{name}
 %{_datadir}/%{name}
 %{_datadir}/applications/%{name}.desktop
+%exclude %{_datadir}/applications/net.%{name}.%{name}.desktop
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 %{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
 %{_mandir}/man6/minetest.*
@@ -179,6 +186,11 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Tue Jun 06 2017 Gwyn Ciesla <limburgher@gmail.com> - 0.4.16-1
+- 0.4.16.
+- Fixes font licensing issue.
+- Appdata fixes.
+
 * Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.15-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
