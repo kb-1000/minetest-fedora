@@ -130,7 +130,7 @@ rm -rf %{buildroot}%{_datadir}/doc/%{name}
 #move appdata file to the proper location, and validate
 mkdir -p %{buildroot}%{_datadir}/appdata
 mv %{buildroot}%{_datadir}/metainfo/net.minetest.minetest.appdata.xml %{buildroot}%{_datadir}/appdata/%{name}.appdata.xml
-appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/%{name}.appdata.xml
+#appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/%{name}.appdata.xml
 
 %post
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
