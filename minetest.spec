@@ -1,6 +1,6 @@
 Name:     minetest
 Version:  0.4.16
-Release:  1%{?dist}
+Release:  2%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 License:  LGPLv2+ and CC-BY-SA
@@ -40,6 +40,7 @@ BuildRequires:  luajit-devel
 BuildRequires:  leveldb-devel
 BuildRequires:  gmp-devel
 BuildRequires:	libappstream-glib
+BuildRequires:  freetype-devel
 
 Requires:       %{name}-server = %{version}-%{release}
 Requires:       hicolor-icon-theme
@@ -70,23 +71,24 @@ popd
 
 cp %{SOURCE7} doc/
 
-# purge bundled jsoncpp and lua
-rm -rf src/json src/lua
+# purge bundled jsoncpp and lua, and gmp :P
+rm -vrf lib/jsoncpp lib/lua lib/gmp
 
 find . -name .gitignore -delete
 
 %build
 # -DENABLE_FREETYPE=ON needed for Unicode in text chat
-%cmake -DENABLE_CURL=TRUE \
-       -DENABLE_LEVELDB=TRUE \
-       -DENABLE_LUAJIT=TRUE \
-       -DENABLE_GETTEXT=TRUE \
-       -DENABLE_SOUND=TRUE \
+%cmake -DENABLE_CURL=TRUE           \
+       -DENABLE_LEVELDB=TRUE        \
+       -DENABLE_LUAJIT=TRUE         \
+       -DENABLE_GETTEXT=TRUE        \
+       -DENABLE_SOUND=TRUE          \
        -DENABLE_SYSTEM_JSONCPP=TRUE \
-       -DENABLE_FREETYPE=FALSE \
-       -DBUILD_SERVER=TRUE \
+       -DENABLE_SYSTEM_GMP=TRUE     \
+       -DENABLE_FREETYPE=TRUE       \
+       -DBUILD_SERVER=TRUE          \
        .
-make %{?_smp_mflags}
+%make_build
 
 %install
 %make_install
@@ -186,6 +188,10 @@ exit 0
 %{_mandir}/man6/minetestserver.*
 
 %changelog
+* Mon Jul 17 2017 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.4.16-2
+- Re-enable freetype
+- Properly unbundle 3rd-party libs
+
 * Tue Jun 06 2017 Gwyn Ciesla <limburgher@gmail.com> - 0.4.16-1
 - 0.4.16.
 - Fixes font licensing issue.
