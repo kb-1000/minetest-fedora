@@ -1,6 +1,6 @@
 Name:     minetest
 Version:  0.4.16
-Release:  2%{?dist}
+Release:  3%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 License:  LGPLv2+ and CC-BY-SA
@@ -74,7 +74,9 @@ cp %{SOURCE7} doc/
 # purge bundled jsoncpp and lua, and gmp :P
 rm -vrf lib/jsoncpp lib/lua lib/gmp
 
-find . -name .gitignore -delete
+find . -name .gitignore -print -delete
+find . -name .travis.yml -print -delete
+find . -name .luacheckrc -print -delete
 
 %build
 # -DENABLE_FREETYPE=ON needed for Unicode in text chat
@@ -127,7 +129,7 @@ mkdir __doc
 mv  %{buildroot}%{_datadir}/doc/%{name}/* __doc
 rm -rf %{buildroot}%{_datadir}/doc/%{name}
 
-# %%find_lang %%{name}
+%find_lang %{name}
 
 #move appdata file to the proper location, and validate
 mkdir -p %{buildroot}%{_datadir}/appdata
@@ -162,17 +164,16 @@ exit 0
 %postun server
 %systemd_postun_with_restart %{name}@default.service 
 
-# %%files -f %%{name}.lang
-%files
+%files -f %{name}.lang
 %license doc/lgpl-2.1.txt
 %doc README.fedora
 %{_bindir}/%{name}
-%{_datadir}/%{name}
+%{_datadir}/%{name}/
 %{_datadir}/applications/%{name}.desktop
 %exclude %{_datadir}/applications/net.%{name}.%{name}.desktop
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 %{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
-%{_mandir}/man6/minetest.*
+%{_mandir}/man6/%{name}.*
 %{_datadir}/appdata/%{name}.appdata.xml
 
 %files server
@@ -185,9 +186,12 @@ exit 0
 %attr(-,minetest,minetest)%{_sharedstatedir}/%{name}/
 %attr(-,minetest,minetest)%{_sysconfdir}/%{name}/
 %attr(-,minetest,minetest)%{_sysconfdir}/sysconfig/%{name}/
-%{_mandir}/man6/minetestserver.*
+%{_mandir}/man6/%{name}server.*
 
 %changelog
+* Mon Jul 17 2017 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.4.16-3
+- Use %%find_lang
+
 * Mon Jul 17 2017 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.4.16-2
 - Re-enable freetype
 - Properly unbundle 3rd-party libs
