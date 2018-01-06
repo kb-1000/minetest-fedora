@@ -1,6 +1,6 @@
 Name:     minetest
 Version:  0.4.16
-Release:  7%{?dist}
+Release:  8%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 License:  LGPLv2+ and CC-BY-SA
@@ -136,18 +136,6 @@ mkdir -p %{buildroot}%{_datadir}/appdata
 mv %{buildroot}%{_datadir}/metainfo/net.minetest.minetest.appdata.xml %{buildroot}%{_datadir}/appdata/%{name}.appdata.xml
 appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/%{name}.appdata.xml
 
-%post
-/bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-
-%postun
-if [ $1 -eq 0 ] ; then
-    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
-    /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-fi
-
-%posttrans
-/usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-
 %pre server
 getent group %{name} >/dev/null || groupadd -r %{name}
 getent passwd %{name} >/dev/null || \
@@ -189,6 +177,9 @@ exit 0
 %{_mandir}/man6/%{name}server.*
 
 %changelog
+* Sat Jan 06 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.4.16-8
+- Remove obsolete scriptlets
+
 * Tue Dec 26 2017 Björn Esser <besser82@fedoraproject.org> - 0.4.16-7
 - Rebuilt for jsoncpp.so.20
 
