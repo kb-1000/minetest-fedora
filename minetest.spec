@@ -1,6 +1,6 @@
 Name:     minetest
-Version:  0.4.16
-Release:  9%{?dist}
+Version:  0.4.17
+Release:  1%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 License:  LGPLv2+ and CC-BY-SA
@@ -17,7 +17,7 @@ Source7:  http://www.gnu.org/licenses/lgpl-2.1.txt
 Source8:  default.conf
 
 # https://github.com/minetest/minetest/issues/4483
-Patch0001:      0001-use-pkg-config-to-find-luajit.patch
+#Patch0001:      0001-use-pkg-config-to-find-luajit.patch
 
 %if 0%{?rhel}
 ExclusiveArch:  %{ix86} x86_64
@@ -177,6 +177,9 @@ exit 0
 %{_mandir}/man6/%{name}server.*
 
 %changelog
+* Mon Jun 04 2018 Gwyn Ciesla <limburgher@gmail.com> - 0.4.17-1
+- 0.4.17.
+
 * Thu Feb 08 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.16-9
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
