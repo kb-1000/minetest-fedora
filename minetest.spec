@@ -1,5 +1,5 @@
 Name:     minetest
-Version:  0.4.17
+Version:  0.4.17.1
 Release:  1%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
@@ -12,7 +12,7 @@ Source2:  %{name}@.service
 Source3:  %{name}.rsyslog
 Source4:  %{name}.logrotate
 Source5:  %{name}.README
-Source6:  https://github.com/minetest/minetest_game/archive/%{version}/%{name}_game-%{version}.tar.gz
+Source6:  https://github.com/minetest/minetest_game/archive/0.4.17/%{name}_game-0.4.17.tar.gz
 Source7:  http://www.gnu.org/licenses/lgpl-2.1.txt
 Source8:  default.conf
 
@@ -66,7 +66,7 @@ Minetest multiplayer server. This package does not require X Window System
 
 pushd games
 tar xf %{SOURCE6}
-mv %{name}_game-%{version} %{name}_game
+mv %{name}_game-0.4.17 %{name}_game
 popd
 
 cp %{SOURCE7} doc/
@@ -177,6 +177,9 @@ exit 0
 %{_mandir}/man6/%{name}server.*
 
 %changelog
+* Mon Jun 11 2018 Gwyn Ciesla <limburgher@gmail.com> - 0.4.17.1-1
+- 0.4.17.1
+
 * Mon Jun 04 2018 Gwyn Ciesla <limburgher@gmail.com> - 0.4.17-1
 - 0.4.17.
 
