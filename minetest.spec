@@ -26,6 +26,8 @@ ExclusiveArch:  %{ix86} x86_64
 ExclusiveArch:  %{arm} %{ix86} x86_64 %{mips} aarch64
 %endif
 
+BuildRequires:  gcc
+BuildRequires:  gcc-c++
 BuildRequires:  cmake >= 2.6.0
 BuildRequires:  irrlicht-devel
 BuildRequires:  bzip2-devel gettext-devel sqlite-devel
