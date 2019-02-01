@@ -1,6 +1,6 @@
 Name:     minetest
 Version:  0.4.17.1
-Release:  2%{?dist}
+Release:  3%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 License:  LGPLv2+ and CC-BY-SA
@@ -179,6 +179,9 @@ exit 0
 %{_mandir}/man6/%{name}server.*
 
 %changelog
+* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.17.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.17.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 
