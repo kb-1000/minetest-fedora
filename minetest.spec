@@ -1,6 +1,6 @@
 Name:     minetest
-Version:  0.4.17.1
-Release:  5%{?dist}
+Version:  5.1.0
+Release:  1%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 License:  LGPLv2+ and CC-BY-SA
@@ -12,7 +12,7 @@ Source2:  %{name}@.service
 Source3:  %{name}.rsyslog
 Source4:  %{name}.logrotate
 Source5:  %{name}.README
-Source6:  https://github.com/minetest/minetest_game/archive/0.4.17/%{name}_game-0.4.17.tar.gz
+Source6:  https://github.com/minetest/minetest_game/archive/%{version}/%{name}_game-%{version}.tar.gz
 Source7:  http://www.gnu.org/licenses/lgpl-2.1.txt
 Source8:  default.conf
 
@@ -68,7 +68,7 @@ Minetest multiplayer server. This package does not require X Window System
 
 pushd games
 tar xf %{SOURCE6}
-mv %{name}_game-0.4.17 %{name}_game
+mv %{name}_game-5.1.0 %{name}_game
 popd
 
 cp %{SOURCE7} doc/
@@ -168,7 +168,7 @@ exit 0
 
 %files server
 %license doc/lgpl-2.1.txt
-%doc README.txt doc/world_format.txt doc/protocol.txt README.fedora
+%doc README.md doc/world_format.txt doc/protocol.txt README.fedora
 %{_bindir}/%{name}server
 %{_unitdir}/%{name}@.service
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}-server
@@ -179,6 +179,9 @@ exit 0
 %{_mandir}/man6/%{name}server.*
 
 %changelog
+* Tue Oct 15 2019 Gwyn Ciesla <gwync@protonmail.com> - 5.1.0-1
+- 5.1.0
+
 * Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.17.1-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
