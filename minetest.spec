@@ -1,6 +1,6 @@
 Name:     minetest
-Version:  0.4.16
-Release:  1%{?dist}
+Version:  0.4.17.1
+Release:  5%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 License:  LGPLv2+ and CC-BY-SA
@@ -12,12 +12,12 @@ Source2:  %{name}@.service
 Source3:  %{name}.rsyslog
 Source4:  %{name}.logrotate
 Source5:  %{name}.README
-Source6:  https://github.com/minetest/minetest_game/archive/%{version}/%{name}_game-%{version}.tar.gz
+Source6:  https://github.com/minetest/minetest_game/archive/0.4.17/%{name}_game-0.4.17.tar.gz
 Source7:  http://www.gnu.org/licenses/lgpl-2.1.txt
 Source8:  default.conf
 
 # https://github.com/minetest/minetest/issues/4483
-Patch0001:      0001-use-pkg-config-to-find-luajit.patch
+#Patch0001:      0001-use-pkg-config-to-find-luajit.patch
 
 %if 0%{?rhel}
 ExclusiveArch:  %{ix86} x86_64
@@ -26,6 +26,8 @@ ExclusiveArch:  %{ix86} x86_64
 ExclusiveArch:  %{arm} %{ix86} x86_64 %{mips} aarch64
 %endif
 
+BuildRequires:  gcc
+BuildRequires:  gcc-c++
 BuildRequires:  cmake >= 2.6.0
 BuildRequires:  irrlicht-devel
 BuildRequires:  bzip2-devel gettext-devel sqlite-devel
@@ -40,6 +42,7 @@ BuildRequires:  luajit-devel
 BuildRequires:  leveldb-devel
 BuildRequires:  gmp-devel
 BuildRequires:	libappstream-glib
+BuildRequires:  freetype-devel
 
 Requires:       %{name}-server = %{version}-%{release}
 Requires:       hicolor-icon-theme
@@ -65,28 +68,31 @@ Minetest multiplayer server. This package does not require X Window System
 
 pushd games
 tar xf %{SOURCE6}
-mv %{name}_game-%{version} %{name}_game
+mv %{name}_game-0.4.17 %{name}_game
 popd
 
 cp %{SOURCE7} doc/
 
-# purge bundled jsoncpp and lua
-rm -rf src/json src/lua
+# purge bundled jsoncpp and lua, and gmp :P
+rm -vrf lib/jsoncpp lib/lua lib/gmp
 
-find . -name .gitignore -delete
+find . -name .gitignore -print -delete
+find . -name .travis.yml -print -delete
+find . -name .luacheckrc -print -delete
 
 %build
 # -DENABLE_FREETYPE=ON needed for Unicode in text chat
-%cmake -DENABLE_CURL=TRUE \
-       -DENABLE_LEVELDB=TRUE \
-       -DENABLE_LUAJIT=TRUE \
-       -DENABLE_GETTEXT=TRUE \
-       -DENABLE_SOUND=TRUE \
+%cmake -DENABLE_CURL=TRUE           \
+       -DENABLE_LEVELDB=TRUE        \
+       -DENABLE_LUAJIT=TRUE         \
+       -DENABLE_GETTEXT=TRUE        \
+       -DENABLE_SOUND=TRUE          \
        -DENABLE_SYSTEM_JSONCPP=TRUE \
-       -DENABLE_FREETYPE=FALSE \
-       -DBUILD_SERVER=TRUE \
+       -DENABLE_SYSTEM_GMP=TRUE     \
+       -DENABLE_FREETYPE=TRUE       \
+       -DBUILD_SERVER=TRUE          \
        .
-make %{?_smp_mflags}
+%make_build
 
 %install
 %make_install
@@ -125,24 +131,12 @@ mkdir __doc
 mv  %{buildroot}%{_datadir}/doc/%{name}/* __doc
 rm -rf %{buildroot}%{_datadir}/doc/%{name}
 
-# %%find_lang %%{name}
+%find_lang %{name}
 
 #move appdata file to the proper location, and validate
 mkdir -p %{buildroot}%{_datadir}/appdata
 mv %{buildroot}%{_datadir}/metainfo/net.minetest.minetest.appdata.xml %{buildroot}%{_datadir}/appdata/%{name}.appdata.xml
 #appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/%{name}.appdata.xml
-
-%post
-/bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-
-%postun
-if [ $1 -eq 0 ] ; then
-    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
-    /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-fi
-
-%posttrans
-/usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 %pre server
 getent group %{name} >/dev/null || groupadd -r %{name}
@@ -160,17 +154,16 @@ exit 0
 %postun server
 %systemd_postun_with_restart %{name}@default.service 
 
-# %%files -f %%{name}.lang
-%files
+%files -f %{name}.lang
 %license doc/lgpl-2.1.txt
 %doc README.fedora
 %{_bindir}/%{name}
-%{_datadir}/%{name}
+%{_datadir}/%{name}/
 %{_datadir}/applications/%{name}.desktop
 %exclude %{_datadir}/applications/net.%{name}.%{name}.desktop
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 %{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
-%{_mandir}/man6/minetest.*
+%{_mandir}/man6/%{name}.*
 %{_datadir}/appdata/%{name}.appdata.xml
 
 %files server
@@ -183,9 +176,52 @@ exit 0
 %attr(-,minetest,minetest)%{_sharedstatedir}/%{name}/
 %attr(-,minetest,minetest)%{_sysconfdir}/%{name}/
 %attr(-,minetest,minetest)%{_sysconfdir}/sysconfig/%{name}/
-%{_mandir}/man6/minetestserver.*
+%{_mandir}/man6/%{name}server.*
 
 %changelog
+* Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.17.1-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
+* Fri Jul 05 2019 Björn Esser <besser82@fedoraproject.org> - 0.4.17.1-4
+- Rebuild (jsoncpp)
+
+* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.17.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.17.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
+* Mon Jun 11 2018 Gwyn Ciesla <limburgher@gmail.com> - 0.4.17.1-1
+- 0.4.17.1
+
+* Mon Jun 04 2018 Gwyn Ciesla <limburgher@gmail.com> - 0.4.17-1
+- 0.4.17.
+
+* Thu Feb 08 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.16-9
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
+* Sat Jan 06 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.4.16-8
+- Remove obsolete scriptlets
+
+* Tue Dec 26 2017 Björn Esser <besser82@fedoraproject.org> - 0.4.16-7
+- Rebuilt for jsoncpp.so.20
+
+* Fri Sep 01 2017 Björn Esser <besser82@fedoraproject.org> - 0.4.16-6
+- Rebuilt for jsoncpp-1.8.3
+
+* Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.16-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
+
+* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.16-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
+* Mon Jul 17 2017 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.4.16-3
+- Use %%find_lang
+
+* Mon Jul 17 2017 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.4.16-2
+- Re-enable freetype
+- Properly unbundle 3rd-party libs
+
 * Tue Jun 06 2017 Gwyn Ciesla <limburgher@gmail.com> - 0.4.16-1
 - 0.4.16.
 - Fixes font licensing issue.
