@@ -1,6 +1,6 @@
 Name:     minetest
 Version:  5.1.0
-Release:  1%{?dist}
+Release:  2%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 License:  LGPLv2+ and CC-BY-SA
@@ -179,6 +179,9 @@ exit 0
 %{_mandir}/man6/%{name}server.*
 
 %changelog
+* Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 5.1.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Tue Oct 15 2019 Gwyn Ciesla <gwync@protonmail.com> - 5.1.0-1
 - 5.1.0
 
