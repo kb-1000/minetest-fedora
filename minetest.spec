@@ -1,6 +1,6 @@
 Name:     minetest
 Version:  5.1.0
-Release:  2%{?dist}
+Release:  3%{?dist}
 Summary:  Multiplayer infinite-world block sandbox with survival mode
 
 License:  LGPLv2+ and CC-BY-SA
@@ -91,7 +91,8 @@ find . -name .luacheckrc -print -delete
        -DENABLE_SYSTEM_GMP=TRUE     \
        -DENABLE_FREETYPE=TRUE       \
        -DBUILD_SERVER=TRUE          \
-       .
+       -DJSON_INCLUDE_DIR=/usr/include/json \
+.
 %make_build
 
 %install
@@ -179,6 +180,10 @@ exit 0
 %{_mandir}/man6/%{name}server.*
 
 %changelog
+
+* Sun Mar 29 2020 Aleksandra Fedorova <alpha@bookwar.info> - 5.1.0-3
+- Set path to jsoncpp explicitly
+
 * Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 5.1.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
